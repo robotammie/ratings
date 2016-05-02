@@ -10,7 +10,6 @@ db = SQLAlchemy()
 
 
 ##############################################################################
-# Model definitions
 
 class User(db.Model):
     """User of ratings website."""
@@ -23,8 +22,43 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
+    # rat = db.relationship('Rating')
 
-# Put your Movie and Rating model classes here.
+    def __repr__(self):
+        """__repr__ stands for either represent or reproduce."""
+
+        return "<User user_id=%s email=%s>" % (self.user_id, self.email)
+
+class Movie(db.Model):
+    """Movie info in rating website."""
+
+    __tablename__ = "movies"
+
+    movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    title = db.Column(db.String(64), nullable=False)
+    released_at = db.Column(db.DateTime, nullable=False)
+    imdb_url = db.Column(db.String(128), nullable=False)
+
+    # rat = db.relationship('Rating')
+
+class Rating(db.Model):
+    """Movie ratings as provided by uesers."""
+
+    __tablename__ = "ratings"
+
+    rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    movie_id = db.Column(db.Integer,
+        # db.ForeignKey('movies.movie_id'),
+        nullable=False)
+    user_id = db.Column(db.Integer,
+        # db.ForeignKey('users.user_id'),
+        nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+
+    # mov = db.relationship('Movie')
+    # usr = db.relationship('User')
+
+
 
 
 ##############################################################################
