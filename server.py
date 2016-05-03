@@ -24,6 +24,37 @@ def index():
 
     return render_template('homepage.html')
 
+@app.route('/users')
+def show_users():
+    """Display list of users."""
+
+    users = User.query.all()
+
+    return render_template('user_list.html',
+                            users=users)
+
+@app.route('/login')
+def login():
+
+    return render_template('login_form.html')
+
+
+@app.route('/process-login', methods=['POST'])
+def process_login():
+    """Logs in existing users; adds new users to database along with password."""
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    # get list of all currnet users' emails
+    all_emails = db.session.query(User.email).all()
+
+    # if user already exists, check password and log in
+    if email in all_emails:
+
+    # if user doesn't exist, create user and add to database 
+    else:
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
