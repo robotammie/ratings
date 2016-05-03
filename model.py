@@ -35,9 +35,9 @@ class Movie(db.Model):
     __tablename__ = "movies"
 
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
-    released_at = db.Column(db.DateTime, nullable=False)
-    imdb_url = db.Column(db.String(128), nullable=False)
+    title = db.Column(db.String(128), nullable=True)
+    released_at = db.Column(db.DateTime, nullable=True)
+    imdb_url = db.Column(db.String(256), nullable=True)
 
     # rat = db.relationship('Rating')
 

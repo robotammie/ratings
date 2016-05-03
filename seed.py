@@ -7,6 +7,7 @@ from model import Movie
 
 from model import connect_to_db, db
 from server import app
+from datetime import datetime
 
 
 def load_users():
@@ -36,48 +37,54 @@ def load_users():
 
 def load_movies():
     """Load movies from u.item into database."""
-
     print "Movies"
 
-    # Delete all rows in table, so if we need to run this a second time,
-    # we won't be trying to add duplicate users
     Movie.query.delete()
 
-    # Read u.item file and insert data
     for row in open("seed_data/u.item"):
         row = row.rstrip()
-        movie_id, movie_title, release_date, video_release_date, imbd_url, unknown, Action, Adventure, Animation, Children, Comedy, Crime, Documentary, Drama, Fantasy, Film_Noir, Horror, Musical, Mystery, Romance, Sci_Fi, Thriller, War, Western = row.split("|")
-        user = User(movie_id=movie_id,
+        # unpack movie information into individual variables
+        movie_id, movie_title, release_date, video_release_date, imdb_url, unknown, Action, Adventure, Animation, Children, Comedy, Crime, Documentary, Drama, Fantasy, Film_Noir, Horror, Musical, Mystery, Romance, Sci_Fi, Thriller, War, Western = row.split("|")
+        
+        # remove release year from title, if exists
+        if movie_title[-1] == ')':
+            movie_title = movie_title[:-7]
+
+        # transmute release date string into datetime object
+        if release_date:
+            release_date = datetime.strptime(release_date, '%d-%b-%Y')
+        else:
+            release_date = None
+        
+        movie = Movie(movie_id=movie_id,
                     title=movie_title,
                     released_at=release_date,
-                    imbd_url=imbd_url)
+                    imdb_url=imdb_url)
 
-        # We need to add to the session or it won't ever be stored
-        db.session.add(user)
+        db.session.add(movie)
 
-    # Once we're done, we should commit our work
     db.session.commit()
 
 def load_ratings():
     """Load ratings from u.data into database."""
 
-    print "Users"
+    print "Ratings"
 
     # Delete all rows in table, so if we need to run this a second time,
     # we won't be trying to add duplicate users
-    User.query.delete()
+    Rating.query.delete()
 
     # Read u.user file and insert data
-    for row in open("seed_data/u.user"):
+    for row in open("seed_data/u.data"):
         row = row.rstrip()
-        user_id, age, gender, occupation, zipcode = row.split("|")
+        user_id, movie_id, score, timestamp = row.split("\t")
 
-        user = User(user_id=user_id,
-                    age=age,
-                    zipcode=zipcode)
+        rating = Rating(user_id=user_id,
+                    movie_id=movie_id,
+                    score=score)
 
         # We need to add to the session or it won't ever be stored
-        db.session.add(user)
+        db.session.add(rating)
 
     # Once we're done, we should commit our work
     db.session.commit()
