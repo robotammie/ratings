@@ -22,10 +22,8 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
-    # rat = db.relationship('Rating')
-
     def __repr__(self):
-        """__repr__ stands for either represent or reproduce."""
+        """define how model displays."""
 
         return "<User user_id=%s email=%s>" % (self.user_id, self.email)
 
@@ -39,7 +37,10 @@ class Movie(db.Model):
     released_at = db.Column(db.DateTime, nullable=True)
     imdb_url = db.Column(db.String(256), nullable=True)
 
-    # rat = db.relationship('Rating')
+    def __repr__(self):
+        """define how model displays"""
+        
+        return "<User movie_id=%s title=%s>" % (self.movie_id, self.title)
 
 class Rating(db.Model):
     """Movie ratings as provided by uesers."""
@@ -48,17 +49,23 @@ class Rating(db.Model):
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     movie_id = db.Column(db.Integer,
-        # db.ForeignKey('movies.movie_id'),
+        db.ForeignKey('movies.movie_id'),
         nullable=False)
     user_id = db.Column(db.Integer,
-        # db.ForeignKey('users.user_id'),
+        db.ForeignKey('users.user_id'),
         nullable=False)
     score = db.Column(db.Integer, nullable=False)
 
-    # mov = db.relationship('Movie')
-    # usr = db.relationship('User')
+    movie = db.relationship('Movie',
+            backref=db.backref("ratings", order_by=rating_id))
+    user = db.relationship('User',
+            backref=db.backref("ratings", order_by=rating_id))
 
-
+    def __repr__(self):
+        """define how model displays"""
+        
+        return "<Rating rating_id=%s movie_id=%s user_id=%s score=%s>" % (
+            self.rating_id, self.movie_id, self.user_id, self.score)
 
 
 ##############################################################################

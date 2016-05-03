@@ -44,8 +44,9 @@ def load_movies():
     for row in open("seed_data/u.item"):
         row = row.rstrip()
         # unpack movie information into individual variables
-        movie_id, movie_title, release_date, video_release_date, imdb_url, unknown, Action, Adventure, Animation, Children, Comedy, Crime, Documentary, Drama, Fantasy, Film_Noir, Horror, Musical, Mystery, Romance, Sci_Fi, Thriller, War, Western = row.split("|")
-        
+        tokens = row.split("|")
+        movie_id, movie_title, release_date, video_release_date, imdb_url = tokens[:5]
+
         # remove release year from title, if exists
         if movie_title[-1] == ')':
             movie_title = movie_title[:-7]
@@ -57,9 +58,9 @@ def load_movies():
             release_date = None
         
         movie = Movie(movie_id=movie_id,
-                    title=movie_title,
-                    released_at=release_date,
-                    imdb_url=imdb_url)
+                      title=movie_title,
+                      released_at=release_date,
+                      imdb_url=imdb_url)
 
         db.session.add(movie)
 
@@ -80,8 +81,8 @@ def load_ratings():
         user_id, movie_id, score, timestamp = row.split("\t")
 
         rating = Rating(user_id=user_id,
-                    movie_id=movie_id,
-                    score=score)
+                        movie_id=movie_id,
+                        score=score)
 
         # We need to add to the session or it won't ever be stored
         db.session.add(rating)
