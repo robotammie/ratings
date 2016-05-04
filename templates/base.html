@@ -6,6 +6,11 @@
 
 <body>
   Ratings
+
+  <br>
+  {% for message in get_flashed_messages() %}
+    {{ message }}
+  {% endfor %}
   <hr>
 
   {% block content %} put your content here {% endblock %}

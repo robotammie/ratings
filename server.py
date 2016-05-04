@@ -43,18 +43,36 @@ def login():
 def process_login():
     """Logs in existing users; adds new users to database along with password."""
 
+    # pull data from form
     email = request.form.get("email")
     password = request.form.get("password")
 
-    # get list of all currnet users' emails
-    all_emails = db.session.query(User.email).all()
+    # select the user from the database who has the given email (if any)
+    user = User.query.filter(User.email == email).first()
 
-    # if user already exists, check password and log in
-    if email in all_emails:
+    if user == None:
+        # instantiate a user object with the information provided
+        user = User(email=email, password=password)
+        
+        # add user to session and commit to database
+        db.session.add(user)
+        db.session.commit()
 
-    # if user doesn't exist, create user and add to database 
+        # set a cookie identifying the user; return to homepage
+        session['user_id'] = user.user_id
+        flash('You are now logged in.')
+        return redirect('/')
     else:
-
+        # check to see if password is correct
+        if password == user.password:
+            # set a cookie identifying the user; return to homepage
+            session['user_id'] = user.user_id
+            flash('You are now logged in.')
+            return redirect('/')
+        else:
+            # flash message, stay on page?
+            flash('Your password was incorrect. Please enter your information again.')
+            return redirect('/login')
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
