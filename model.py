@@ -40,10 +40,10 @@ class Movie(db.Model):
     def __repr__(self):
         """define how model displays"""
         
-        return "<User movie_id=%s title=%s>" % (self.movie_id, self.title)
+        return "<Movie movie_id=%s title=%s>" % (self.movie_id, self.title)
 
 class Rating(db.Model):
-    """Movie ratings as provided by uesers."""
+    """Movie ratings as provided by users."""
 
     __tablename__ = "ratings"
 
@@ -76,6 +76,7 @@ def connect_to_db(app):
 
     # Configure to use our PstgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///ratings'
+    app.config['SQLALCHEMY_ECHO']=True
     db.app = app
     db.init_app(app)
 

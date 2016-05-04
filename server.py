@@ -101,10 +101,17 @@ def display_user(cheesecake):
     zipcode = user.zipcode
     movies = user.ratings
 
+    # create a list of tuples: (movie title, movie score) for all movies rated by user
+    rating_info = [(Movie.query.get(m.movie_id).title, m.score) for m in movies]
+    #               get a particular movie                         ^ movie object
+    #                               id of the movie object
+    #                                           get movie's title
+
+
     return render_template('/user_page.html',
                            age=age,
                            zipcode=zipcode,
-                           movies=movies)
+                           rating_info=rating_info)
 
 
 if __name__ == "__main__":
