@@ -88,7 +88,23 @@ def process_logout():
     del session ['user_id']
     flash('You are now logged out.')
 
-    return redirect('/')    
+    return redirect('/')
+
+
+@app.route('/users/<cheesecake>')
+def display_user(cheesecake):
+    """Display user information for any given user."""
+
+    user = User.query.get(cheesecake)
+
+    age = user.age
+    zipcode = user.zipcode
+    movies = user.ratings
+
+    return render_template('/user_page.html',
+                           age=age,
+                           zipcode=zipcode,
+                           movies=movies)
 
 
 if __name__ == "__main__":
