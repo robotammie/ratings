@@ -7,6 +7,17 @@
 <body>
   Ratings
 
+  {% if session.get('user_id') != None %}
+    <form action="/logout" method='POST'>
+        <input type='submit' value='Log Out'>
+    </form>
+  {% else %}
+    <form action="/login" method='POST'>
+        <input type='submit' value='Login'>
+    </form>
+  {% endif %}
+
+
   <br>
   {% for message in get_flashed_messages() %}
     {{ message }}

@@ -33,7 +33,7 @@ def show_users():
     return render_template('user_list.html',
                             users=users)
 
-@app.route('/login')
+@app.route('/login', methods=['POST', 'GET'])
 def login():
 
     return render_template('login_form.html')
@@ -61,21 +61,35 @@ def process_login():
         # set a cookie identifying the user; return to homepage
         session['user_id'] = user.user_id
         flash('You are now logged in.')
+
         return redirect('/')
+    
     else:
         # check to see if password is correct
         if password == user.password:
             # set a cookie identifying the user; return to homepage
             session['user_id'] = user.user_id
             flash('You are now logged in.')
+            
             return redirect('/')
+        
         else:  # if password does not match database
             # flash message, stay on page
             flash('Your password was incorrect. Please enter your information again.')
+            
             return redirect('/login')
 
-    # TODO: handle logging out
-        # have a logout button on the base template?
+
+@app.route('/logout', methods=['POST'])
+def process_logout():
+    """Log user out of ratings website."""
+
+    # remove user id from session
+    del session ['user_id']
+    flash('You are now logged out.')
+
+    return redirect('/')    
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
