@@ -69,8 +69,8 @@ def process_login():
             session['user_id'] = user.user_id
             flash('You are now logged in.')
             return redirect('/')
-        else:
-            # flash message, stay on page?
+        else:  # if password does not match database
+            # flash message, stay on page
             flash('Your password was incorrect. Please enter your information again.')
             return redirect('/login')
 
