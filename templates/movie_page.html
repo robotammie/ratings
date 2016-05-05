@@ -9,10 +9,30 @@
     <a href="{{ movie.imdb_url }}">IMDB URL</a>
 </p>
 
-<h4>All Ratings</h4>
+<h3>Ratings</h3>
+<p>Average Rating: {{ average }}</p>
+<br>
+
+
+
+        <form >
+            <label >Rate this movie:
+                <input type="radio" name="score" value="1">1
+                <input type="radio" name="score" value="2">2
+                <input type="radio" name="score" value="3">3
+                <input type="radio" name="score" value="4">4
+                <input type="radio" name="score" value="5">5
+                <input type="hidden" name="movie_id" value="{{ movie.movie_id }}"
+            </label>
+            <input type="submit" value="Rate It!">
+        </form>
+
+
+
+<h4>All Ratings:</h4>
     <ul>
     <!-- title and rating for every movie rated by User -->
-        {% for rating in ratings %}
+        {% for rating in movie.ratings %}
         <li>
             {{ rating.score }}
         </li>

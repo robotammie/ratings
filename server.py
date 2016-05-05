@@ -68,18 +68,48 @@ def display_movie(cheesecake):
 
     movie = Movie.query.get(cheesecake)
 
+    num_ratings = len(movie.ratings)
+
+    total_score = 0.0
+
+    for rating in movie.ratings:
+        total_score += rating.score
+
+    average = total_score / num_ratings
+
     # average rating on top, your rating below
 
     # TODO: if user is logged in, let them rate the movie (either rate new
     # or update previously given rating)
     # radio buttons?
 
-    # TODO: list all ratings a movie has recieved
-    ratings = movie.ratings
-
     return render_template('/movie_page.html',
                            movie=movie,
-                           ratings=ratings)
+                           average=average)
+
+
+@app.route('/rateit', methods=['POST'])
+def rate_movie():
+    """Logs user's rating in the database."""
+
+    score = request.form.get("score")
+    movie = request.form.get("movie_id")
+
+    user_rating = Rating.query.filter(Rating.user_id == session['user_id'],
+                                      Rating.movie_id == movie)
+
+    if user_rating == None: # user has not rated movie before
+        
+        rating = Rating(movie_id=movie, user_id=session['user_id'], score=score)
+        
+        db.session.add(rating)
+        db.session.commit()
+
+    else: # user has rated movie before
+        # TODO: UPDATE DATABASE
+        pass
+
+    return #stuff. Or things. Whatever.
 
 
 @app.route('/login', methods=['POST', 'GET'])
