@@ -75,9 +75,11 @@ def display_movie(cheesecake):
     # radio buttons?
 
     # TODO: list all ratings a movie has recieved
+    ratings = movie.ratings
 
     return render_template('/movie_page.html',
-                           movie=movie)
+                           movie=movie,
+                           ratings=ratings)
 
 
 @app.route('/login', methods=['POST', 'GET'])

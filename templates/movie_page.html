@@ -9,13 +9,14 @@
     <a href="{{ movie.imdb_url }}">IMDB URL</a>
 </p>
 
-<h4>Ratings</h4>
-<table>
-    <tr>
-        <th>Movie</th>
-        <th>Rating</th>
-
-</table>
-
+<h4>All Ratings</h4>
+    <ul>
+    <!-- title and rating for every movie rated by User -->
+        {% for rating in ratings %}
+        <li>
+            {{ rating.score }}
+        </li>
+        {% endfor %}
+    </ul>
 
 {% endblock %}
