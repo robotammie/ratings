@@ -24,6 +24,7 @@ def index():
 
     return render_template('homepage.html')
 
+
 @app.route('/users')
 def show_users():
     """Display list of users."""
@@ -32,6 +33,52 @@ def show_users():
 
     return render_template('user_list.html',
                             users=users)
+
+
+@app.route('/movies')
+def show_movies():
+    """Display list of movies."""
+
+    movies = Movie.query.order_by(Movie.title).all()
+
+    # movie.released_at.strftime(%Y)
+
+    return render_template('movie_list.html',
+                            movies=movies)
+
+
+@app.route('/users/<cheesecake>')
+def display_user(cheesecake):
+    """Display user information for any given user."""
+
+    user = User.query.get(cheesecake)
+    movies = user.ratings
+
+    # create a list of tuples: (movie title, movie score) for all movies rated by user
+    rating_info = [(m.movie.title, m.score) for m in movies]
+
+    return render_template('/user_page.html',
+                           user=user,
+                           rating_info=rating_info)
+
+
+@app.route('/movies/<cheesecake>')
+def display_movie(cheesecake):
+    """Display movie information for any given movie."""
+
+    movie = Movie.query.get(cheesecake)
+
+    # average rating on top, your rating below
+
+    # TODO: if user is logged in, let them rate the movie (either rate new
+    # or update previously given rating)
+    # radio buttons?
+
+    # TODO: list all ratings a movie has recieved
+
+    return render_template('/movie_page.html',
+                           movie=movie)
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -91,27 +138,6 @@ def process_logout():
     return redirect('/')
 
 
-@app.route('/users/<cheesecake>')
-def display_user(cheesecake):
-    """Display user information for any given user."""
-
-    user = User.query.get(cheesecake)
-
-    age = user.age
-    zipcode = user.zipcode
-    movies = user.ratings
-
-    # create a list of tuples: (movie title, movie score) for all movies rated by user
-    rating_info = [(Movie.query.get(m.movie_id).title, m.score) for m in movies]
-    #               get a particular movie                         ^ movie object
-    #                               id of the movie object
-    #                                           get movie's title
-
-
-    return render_template('/user_page.html',
-                           age=age,
-                           zipcode=zipcode,
-                           rating_info=rating_info)
 
 
 if __name__ == "__main__":
