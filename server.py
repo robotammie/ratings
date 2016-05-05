@@ -54,8 +54,8 @@ def display_user(cheesecake):
     user = User.query.get(cheesecake)
     movies = user.ratings
 
-    # create a list of tuples: (movie title, movie score) for all movies rated by user
-    rating_info = [(m.movie.title, m.score) for m in movies]
+    # create a list of tuples: (movie id, title, score) for all movies rated by user
+    rating_info = [(m.movie_id, m.movie.title, m.score) for m in movies]
 
     return render_template('/user_page.html',
                            user=user,
@@ -77,6 +77,9 @@ def display_movie(cheesecake):
 
     average = total_score / num_ratings
 
+    user_rating = Rating.query.filter(Rating.user_id == session['user_id'],
+                                      Rating.movie_id == cheesecake).first()
+
     # average rating on top, your rating below
 
     # TODO: if user is logged in, let them rate the movie (either rate new
@@ -85,31 +88,35 @@ def display_movie(cheesecake):
 
     return render_template('/movie_page.html',
                            movie=movie,
-                           average=average)
+                           average=average,
+                           user_rating=user_rating)
 
 
 @app.route('/rateit', methods=['POST'])
 def rate_movie():
     """Logs user's rating in the database."""
 
+    # get data from form
     score = request.form.get("score")
     movie = request.form.get("movie_id")
 
+    # check to see if the user has already rated the movie, get request object
     user_rating = Rating.query.filter(Rating.user_id == session['user_id'],
-                                      Rating.movie_id == movie)
+                                      Rating.movie_id == movie).first()
 
     if user_rating == None: # user has not rated movie before
-        
+        # create new record for database
         rating = Rating(movie_id=movie, user_id=session['user_id'], score=score)
         
         db.session.add(rating)
         db.session.commit()
 
     else: # user has rated movie before
-        # TODO: UPDATE DATABASE
-        pass
+        user_rating.score = score  # update score in database
 
-    return #stuff. Or things. Whatever.
+        db.session.commit()
+
+    return redirect('/movies/{}'.format(movie))
 
 
 @app.route('/login', methods=['POST', 'GET'])

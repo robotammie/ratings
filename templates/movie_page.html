@@ -10,12 +10,18 @@
 </p>
 
 <h3>Ratings</h3>
-<p>Average Rating: {{ average }}</p>
-<br>
+<p>Average Rating: {{ '%0.1f'| format(average) }}</p>
 
+<!-- check if user is signed in -->
+{% if session.get('user_id') != None %}
+    <!-- if user has rated movie, display their rating -->
+    {% if user_rating %}
+        <p>Your Rating: {{ user_rating.score }}</p>
+    {% else %}
+        <p>You have not yet rated this movie.</p>
+    {% endif %}
 
-
-        <form >
+        <form action="/rateit" method='POST'>
             <label >Rate this movie:
                 <input type="radio" name="score" value="1">1
                 <input type="radio" name="score" value="2">2
@@ -26,8 +32,7 @@
             </label>
             <input type="submit" value="Rate It!">
         </form>
-
-
+{% endif %}
 
 <h4>All Ratings:</h4>
     <ul>

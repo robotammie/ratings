@@ -19,10 +19,10 @@
     {% for rating in rating_info %}
     <tr>
         <td>
-            {{ rating[0] }}
+            <a href="/movies/{{ rating[0] }}">{{ rating[1] }}</a>
         </td>
         <td>
-            {{ rating[1] }}
+            {{ rating[2] }}
         </td>
     </tr>
     {% endfor %}
